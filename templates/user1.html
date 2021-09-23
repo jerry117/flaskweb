@@ -1,0 +1,14 @@
+ {% extends "base.html" %} 
+ {% block title %}Flasky - User{% endblock %}
+ {% block page_content %}
+ <div class="page-header">
+    <h1>Hello, {{ name| capitalize }}!</h1>
+    <h2>safe 渲染值时不转义</h2>
+    <h2>capitalize 把值的首字母转换成大写，其他字母转换成小写</h2>
+    <h2>lower 把值转换成小写形式</h2>
+    <h2>upper 把值转换成大写形式</h2>
+    <h2>title 把值中每个单词的首字母都转换成大写</h2>
+    <h2>trim 把值的首尾空格去掉</h2>
+    <h2>striptags 渲染之前把值中所有的 HTML 标签都删掉</h2>
+    </div>
+{% endblock %}

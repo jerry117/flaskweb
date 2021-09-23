@@ -19,7 +19,7 @@ def index():
 def user(name):
     # return '<h1>hello %s !</h1>' % name
     # 使用渲染模板
-    return render_template('user.html', name=name)
+    return render_template('user1.html', name=name)
 
 
 @app.errorhandler(404)
