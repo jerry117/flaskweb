@@ -1,5 +1,5 @@
-# flaskweb
-a flaskweb project
+# flask-web-project
+A simple flaskweb project
 
 ## Python版本 
    python == 3.7.7
@@ -7,5 +7,5 @@ a flaskweb project
 ## 依赖第三方包
 
 ```bash
-   pip install -r requirements.txt
+pip install -r requirements.txt
 ```
