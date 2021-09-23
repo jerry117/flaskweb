@@ -1,8 +1,12 @@
 from flask import Flask
 from flask import request
 from flask import render_template
+from flask_bootstrap import Bootstrap
 
 app = Flask(__name__)
+
+# 使用 Flask-Bootstrap 的模板
+bootstrap = Bootstrap(app)
 
 @app.route('/')
 def index():
