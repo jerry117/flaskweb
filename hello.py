@@ -1,16 +1,21 @@
 from flask import Flask
 from flask import request
+from flask import render_template
 
 app = Flask(__name__)
 
 @app.route('/')
 def index():
     user_agent = request.headers.get('User-Agent')
-    return '<h1>your browser is %s !</h1>' % user_agent
+    # return '<h1>your browser is %s !</h1>' % user_agent
+    # 渲染模板
+    return render_template('index.html')
 
 @app.route('/user/<name>')
 def user(name):
-    return '<h1>hello %s !</h1>' % name
+    # return '<h1>hello %s !</h1>' % name
+    # 使用渲染模板
+    return render_template('user.html', name=name)
 
 
 if __name__ == '__main__':
