@@ -36,13 +36,10 @@
 <div class="container">
     <div class="page-header">
 <h1>Hello World!</h1>
+<p>The local date and time is {{ moment(current_time).format('LLL') }}.</p>
+<p>That was {{ moment(current_time).fromNow(refresh=True) }}</p>
 </div>
 </div>
 
 {% endblock %}
 
-
-{% block scripts %}
-{{ super() }}
-<script type="text/javascript" src="my-script.js"></script>
-{% endblock %}

@@ -1,7 +1,9 @@
 {% extends "bootstrap/base.html" %}
 
 {% block title %}Flasky{% endblock %}
+
 {% block head %}
+<!-- 通过继承 -->
 {{ super() }}
 <link rel="shortcut icon" href="{{ url_for('static', filename = 'favicon.ico') }}"
  type="image/x-icon">
@@ -25,6 +27,7 @@
     <div class="navbar-collapse collapse">
     <ul class="nav navbar-nav">
     <li><a href="/">Home</a></li>
+    <li><a href="/user/{{name}}">User</a></li>
     </ul>
     </div>
     </div>
@@ -35,4 +38,9 @@
 <div class="container">
  {% block page_content %}{% endblock %}
 </div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+{{ moment.include_moment() }}
 {% endblock %}

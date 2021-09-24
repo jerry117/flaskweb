@@ -2,18 +2,22 @@ from flask import Flask
 from flask import request
 from flask import render_template
 from flask_bootstrap import Bootstrap
+from flask_moment import Moment
+from datetime import datetime
 
 app = Flask(__name__)
 
 # 使用 Flask-Bootstrap 的模板
 bootstrap = Bootstrap(app)
+# 渲染日期和时间
+moment = Moment(app)
 
 @app.route('/')
 def index():
     user_agent = request.headers.get('User-Agent')
     # return '<h1>your browser is %s !</h1>' % user_agent
     # 渲染模板
-    return render_template('index.html')
+    return render_template('index1.html', current_time=datetime.utcnow())
 
 @app.route('/user/<name>')
 def user(name):
