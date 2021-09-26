@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, session, redirect, url_for, flash
 from flask import request
 from flask import render_template
 from flask_bootstrap import Bootstrap
@@ -7,6 +7,10 @@ from datetime import datetime
 from flask_wtf import Form
 from wtforms import StringField, SubmitField
 from wtforms.validators import Required
+from flask_sqlalchemy import SQLAlchemy
+import os
+
+basedir = os.path.abspath(os.path.dirname(__file__))
 
 app = Flask(__name__)
 
@@ -16,6 +20,35 @@ bootstrap = Bootstrap(app)
 moment = Moment(app)
 # 跨站请求伪造保护
 app.config['SECRET_KEY'] = 'hard to guess string'
+
+# 简单的配置sqlite数据库
+app.config['SQLALCHEMY_DATABASE_URI'] ='sqlite:///' + os.path.join(basedir, 'data.sqlite')
+app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
+
+db = SQLAlchemy(app)
+
+class Role(db.Model):
+    __tablename__ = 'roles'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(64), unique=True)
+    users = db.relationship('User', backref='role')
+
+    def __repr__(self):
+        return '<Role %r>' % self.name
+    
+class User(db.Model):
+    __tablename__ = 'users'
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(64), unique=True, index=True)
+    role_id = db.Column(db.Integer, db.ForeignKey('roles.id'))
+
+    def __repr__(self):
+        return '<User %r>' % self.username
+
+
+class NameForm(Form):
+    name = StringField('what is your name?', validators=[Required()])
+    submit = SubmitField('submit')
 
 # @app.route('/')
 # def index():
@@ -39,20 +72,36 @@ def page_not_found(e):
 def internal_server_error(e):
     return render_template('500.html'), 500
 
-class NameForm(Form):
-    name = StringField('what is your name?', validators=[Required()])
-    submit = SubmitField('submit')
+
+# @app.route('/', methods=['GET', 'POST'])
+# def index():
+#     name = None
+#     form = NameForm()
+#     if form.validate_on_submit():
+#         name = form.name.data
+#         form.name.data = ''
+#     return render_template('index1.html', form=form, name=name, current_time=datetime.utcnow())
+
+
+# @app.route('/', methods=['GET', 'POST'])
+# def index():
+#     form = NameForm()
+#     if form.validate_on_submit():
+#         session['name'] = form.name.data
+#         return redirect(url_for('index'))
+#     return render_template('index1.html', form=form, name=session.get('name'), current_time=datetime.utcnow())
+
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    name = None
     form = NameForm()
     if form.validate_on_submit():
-        name = form.name.data
-        form.name.data = ''
-    return render_template('index1.html', form=form, name=name, current_time=datetime.utcnow())
-
-
+        old_name = session.get('name')
+        if old_name is not None and old_name != form.name.data:
+            flash('Looks like you have changed your name!')
+        session['name'] = form.name.data
+        return redirect(url_for('index'))
+    return render_template('index1.html', form = form, name = session.get('name'), current_time=datetime.utcnow())
 
 
 if __name__ == '__main__':
