@@ -6,9 +6,10 @@ from flask_moment import Moment
 from datetime import datetime
 from flask_wtf import Form
 from wtforms import StringField, SubmitField
-from wtforms.validators import Required
+from wtforms.validators import Required, DataRequired
 from flask_sqlalchemy import SQLAlchemy
 import os
+# from flask_script import Manager,Shell
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
@@ -20,10 +21,13 @@ bootstrap = Bootstrap(app)
 moment = Moment(app)
 # 跨站请求伪造保护
 app.config['SECRET_KEY'] = 'hard to guess string'
+# 插件不兼容flask2.0的
+# manager = Manager(app)
 
 # 简单的配置sqlite数据库
 app.config['SQLALCHEMY_DATABASE_URI'] ='sqlite:///' + os.path.join(basedir, 'data.sqlite')
 app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
 
@@ -31,6 +35,7 @@ class Role(db.Model):
     __tablename__ = 'roles'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64), unique=True)
+    # backref 在关系的另一个模型中添加反向引用
     users = db.relationship('User', backref='role')
 
     def __repr__(self):
@@ -47,7 +52,7 @@ class User(db.Model):
 
 
 class NameForm(Form):
-    name = StringField('what is your name?', validators=[Required()])
+    name = StringField('what is your name?', validators=[DataRequired()])
     submit = SubmitField('submit')
 
 # @app.route('/')
@@ -100,6 +105,7 @@ def index():
         if old_name is not None and old_name != form.name.data:
             flash('Looks like you have changed your name!')
         session['name'] = form.name.data
+        # 重定向到这个地址
         return redirect(url_for('index'))
     return render_template('index1.html', form = form, name = session.get('name'), current_time=datetime.utcnow())
 
@@ -157,3 +163,41 @@ if __name__ == '__main__':
 # URL          验证 URL
 # AnyOf        确保输入值在可选值列表中
 # NoneOf       确保输入值不在可选值列表中
+
+
+# 常用的SQLAlchemy关系选项
+# 选项名         说　　明
+# backref       在关系的另一个模型中添加反向引用
+# primaryjoin   明确指定两个模型之间使用的联结条件。只在模棱两可的关系中需要指定
+# lazy          指定如何加载相关记录。可选值有 select（首次访问时按需加载）、immediate（源对象加载后就加载）、joined（加载记录，但使用联结）、subquery（立即加载，但使用子查询），noload（永不加载）和 dynamic（不加载记录，但提供加载记录的查询）
+# uselist       如果设为 Fales，不使用列表，而使用标量值
+# order_by      指定关系中记录的排序方式
+# secondary     指定多对多关系中关系表的名字
+# secondaryjoin SQLAlchemy 无法自行决定时，指定多对多关系中的二级联结条件
+
+
+# 跟运算符无关的特殊方法
+# 类别                                   方法名
+# 字符串/字节序列表示形式                 __repr__、__str__、__format__、__bytes__
+# 数值转换                             __abs__、__bool__、__complex__、__int__、__float__、__hash__、__index__
+# 集合模拟                             __len__、__getitem__、__setitem__、__delitem__、__contains__
+# 迭代枚举                             __iter__、__reversed__、__next__
+# 可调用模拟                           __call__
+# 上下文管理                           __enter__、__exit__
+# 实例创建和销毁                       __new__、__init__、__del__
+# 属性管理                            __getattr__、__getattribute__、__setattr__、__delattr__、__dir__
+# 属性描述符                          __get__、__set__、__delete__
+# 跟类相关的服务                       __prepare__、__instancecheck__、__subclasscheck__
+
+
+
+# 跟运算符相关的特殊方法
+# 类别                               方法名和对应的运算符
+# 一元运算符                      __neg__ -、__pos__ +、__abs__ abs()
+# 众多比较运算符                   __lt__ <、__le__ <=、__eq__ ==、__ne__ !=、__gt__ >、__ge__ >=
+# 算术运算符                      __add__ +、__sub__ -、__mul__ *、__truediv__ /、__floordiv__ //、__mod__ %、__divmod__ divmod()、__pow__ ** 或pow()、__round__ round()
+# 反向算术运算符                   __radd__、__rsub__、__rmul__、__rtruediv__、__rfloordiv__、__rmod__、__rdivmod__、__rpow__
+# 增量赋值算术运算符               __iadd__、__isub__、__imul__、__itruediv__、__ifloordiv__、__imod__、__ipow__
+# 位运算符                        __invert__ ~、__lshift__ <<、__rshift__ >>、__and__ &、__or__ |、__xor__ ^
+# 反向位运算符                    __rlshift__、__rrshift__、__rand__、__rxor__、__ror__
+# 增量赋值位运算符                 __ilshift__、__irshift__、__iand__、__ixor__、__ior__
