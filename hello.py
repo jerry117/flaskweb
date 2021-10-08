@@ -35,8 +35,8 @@ class Role(db.Model):
     __tablename__ = 'roles'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64), unique=True)
-    # backref 在关系的另一个模型中添加反向引用
-    users = db.relationship('User', backref='role')
+    # backref 在关系的另一个模型中添加反向引用  加入lazy=‘dynamic’参数，为了禁止自动执行查询
+    users = db.relationship('User', backref='role', lazy='dynamic')
 
     def __repr__(self):
         return '<Role %r>' % self.name
