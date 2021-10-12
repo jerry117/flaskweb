@@ -11,6 +11,10 @@ from flask_sqlalchemy import SQLAlchemy
 import os
 # from flask_script import Manager,Shell
 from flask_migrate import Migrate
+from flask import Blueprint
+# 应该是vscode的问题
+# from __init__ import mail
+from flask_mail import Message, Mail
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
@@ -24,6 +28,7 @@ moment = Moment(app)
 app.config['SECRET_KEY'] = 'hard to guess string'
 # 插件不兼容flask2.0的
 # manager = Manager(app)
+# mail.init_app(app)
 
 # 简单的配置sqlite数据库
 app.config['SQLALCHEMY_DATABASE_URI'] ='sqlite:///' + os.path.join(basedir, 'data.sqlite')
