@@ -4,7 +4,7 @@ from flask import render_template
 from flask_bootstrap import Bootstrap
 from flask_moment import Moment
 from datetime import datetime
-from flask_wtf import Form
+from flask_wtf import Form, FlaskForm
 from wtforms import StringField, SubmitField
 from wtforms.validators import Required, DataRequired
 from flask_sqlalchemy import SQLAlchemy
@@ -18,7 +18,7 @@ from flask_mail import Message, Mail
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
-app = Flask(__name__)
+app = Flask(__name__,template_folder='../templates', static_folder='../static')
 
 # 使用 Flask-Bootstrap 的模板
 bootstrap = Bootstrap(app)
@@ -58,7 +58,7 @@ class User(db.Model):
         return '<User %r>' % self.username
 
 
-class NameForm(Form):
+class NameForm(FlaskForm):
     name = StringField('what is your name?', validators=[DataRequired()])
     submit = SubmitField('submit')
 
