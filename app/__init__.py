@@ -5,6 +5,7 @@ from flask_moment import Moment
 from flask_sqlalchemy import SQLAlchemy
 # from flask_login import LoginManager
 # from flask_pagedown import PageDown
+# 通过.pth文件解决导入问题。
 from config import config
 
 bootstrap = Bootstrap()
@@ -30,6 +31,9 @@ def create_app(config_name):
     app.register_blueprint(main_blueprint)
 
     return app
+
+
+print(config)
 
 
 
