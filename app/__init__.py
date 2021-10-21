@@ -3,7 +3,7 @@ from flask_bootstrap import Bootstrap
 from flask_mail import Mail
 from flask_moment import Moment
 from flask_sqlalchemy import SQLAlchemy
-# from flask_login import LoginManager
+from flask_login import LoginManager
 # from flask_pagedown import PageDown
 # 通过.pth文件解决导入问题。
 from config import config
@@ -14,8 +14,8 @@ moment = Moment()
 db = SQLAlchemy()
 # pagedown = PageDown()
 
-# login_manager = LoginManager()
-# login_manager.login_view = 'auth.login'
+login_manager = LoginManager()
+login_manager.login_view = 'auth.login'
 
 def create_app(config_name):
     app = Flask(__name__)
@@ -33,7 +33,7 @@ def create_app(config_name):
     return app
 
 
-print(config)
+# print(config)
 
 
 
