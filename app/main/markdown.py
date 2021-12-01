@@ -15,6 +15,8 @@ from flask import Blueprint
 # 应该是vscode的问题
 # from __init__ import mail
 from flask_mail import Message, Mail
+from werkzeug.routing import BaseConverter
+import urllib
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
@@ -68,6 +70,34 @@ class NameForm(FlaskForm):
 #     # return '<h1>your browser is %s !</h1>' % user_agent
 #     # 渲染模板
 #     return render_template('index1.html', current_time=datetime.utcnow())
+
+
+class ListConverter(BaseConverter):
+    def __init__(self, url_map, separator='+'):
+        super(ListConverter, self).__init__(url_map)
+        # self.separator = urllib.unquote(separator)  #unquote  源码没有看到
+
+    def to_python(self, value):
+        return value.split(self.separator)
+
+    def to_url(self, values):
+        return self.separator.join(BaseConverter.to_url(value) for value in values ) 
+        
+        
+app.url_map.converters['list'] = ListConverter
+
+@app.route('/list1/<list:page_names>')
+def list1(page_names):
+    return 'separator: {} {}'.format('+', page_names)
+
+
+@app.route('/list2/<list(separator=u"|"):page_names>')
+def list2(page_names):
+    return 'separator: {} {}'.format('|', page_names)
+    
+
+
+
 
 @app.route('/user/<name>')
 def user(name):
@@ -131,6 +161,17 @@ def index():
         return redirect(url_for('index'))
     return render_template('index1.html', form = form, name = session.get('name'), known = session.get('known', False), current_time=datetime.utcnow())
 
+# 唯一URLdemo
+
+@app.route('/projects/')
+def projects():
+    return 'the project page'
+
+# 访问http://127.0.0.1:5000/about/  会404
+@app.route('/about')
+def about():
+    return 'the about page'
+    
 
 if __name__ == '__main__':
     app.run(debug=True)
@@ -223,3 +264,14 @@ if __name__ == '__main__':
 # 位运算符                        __invert__ ~、__lshift__ <<、__rshift__ >>、__and__ &、__or__ |、__xor__ ^
 # 反向位运算符                    __rlshift__、__rrshift__、__rand__、__rxor__、__ror__
 # 增量赋值位运算符                 __ilshift__、__irshift__、__iand__、__ixor__、__ior__
+
+
+# GET：获取资源，GET操作应该是幂等的
+# HEAD：想要获取信息，但是只关心消息头。应用应该像处理 GET 请求一样来处理它，但是不返回实际内容。
+# POST：创建一个新的资源
+# PUT：完整地替换资源或者创建资源。PUT操作虽然有副作用，但应该是幂等的
+# DELETE：删除资源。DELETE操作有副作用，但也是幂等的
+# OPTIONS：获取资源支持的所有 HTTP 方法。
+# PATCH：局部更新，修改某个已有的资源
+
+
