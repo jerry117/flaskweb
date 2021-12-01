@@ -1,11 +1,25 @@
 from flask import make_response
-from flask import Flask, url_for
+from flask import Flask, url_for, request, jsonify
 from flask import redirect
 from flask import abort
+from flask.wrappers import Request
+from markdown import user
+from werkzeug.wrappers import Response
 
 
 
 app = Flask(__name__)
+app.config.from_object('config')
+
+
+class JsonResponse(Response):
+    @classmethod
+    def force_type(cls, rv, environ=None):
+        if isinstance(rv, dict):
+            rv = jsonify(rv)
+        return super(JsonResponse, cls).force_type(rv, environ)
+        
+app.response_class = JsonResponse
 
 @app.route('/')
 def index():
@@ -35,6 +49,38 @@ with app.test_request_context():
     print(url_for('item', id='1'))
     print(url_for('item', id=2, next='/'))
 
+
+@app.route('/people/')
+def people():
+    name = request.args.get('name')
+    if not name:
+        return redirect(url_for('login'))
+    user_agent = request.headers.get('User-Agent')
+    return 'name: {} ; ua: {}'.format(name, user_agent)
+
+@app.route('/login/', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        user_id = request.form.get['user_id']
+        return 'user:{} login'.format(user_id)
+    else:
+        return 'open login page'
+
+@app.route('/secret/')
+def secret():
+    abort(401)
+    print('this is never executed')
     
-# if __name__ == '__main__':
-#     app.run(debug=True)
+    
+    
+@app.route('/1/')
+def hello_world():
+    return {'message': 'hello world!'}
+    
+@app.route('/custom_headers/')
+def headers():
+    return {'headers': [1,2,3]}, 201, [('X-Request-Id', '100')]
+    
+    
+if __name__ == '__main__':
+    app.run(debug=app.debug)
