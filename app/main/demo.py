@@ -1,14 +1,12 @@
-from flask import make_response
-from flask import Flask, url_for, request, jsonify
-from flask import redirect
-from flask import abort
+from flask import Flask, url_for, request, jsonify, render_template, abort, redirect, make_response, g
+from flask.views import View
 from flask.wrappers import Request
 from markdown import user
 from werkzeug.wrappers import Response
 
 
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder='../templates')
 app.config.from_object('config')
 
 
@@ -20,6 +18,16 @@ class JsonResponse(Response):
         return super(JsonResponse, cls).force_type(rv, environ)
         
 app.response_class = JsonResponse
+
+@app.url_value_preprocessor
+def get_site(endpoint, values):
+    g.site = values.pop('subdomain')
+
+@app.route('/2/', subdomain='<subdomain>')
+def index2():
+    return g.site
+        
+
 
 @app.route('/')
 def index():
