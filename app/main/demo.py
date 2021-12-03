@@ -3,11 +3,14 @@ from flask.views import View
 from flask.wrappers import Request
 from markdown import user
 from werkzeug.wrappers import Response
-
+import pymysql
+from sqlalchemy import create_engine
+from config import config
 
 
 app = Flask(__name__, template_folder='../templates')
 app.config.from_object('config')
+eng = create_engine(config.get('development').DB_URI)
 
 
 class JsonResponse(Response):
@@ -52,11 +55,6 @@ def get_user(id):
 @app.route('/item/1/')
 def item(id):
     pass
-# test_request_context 在交互模式下产生请求上下文
-with app.test_request_context():
-    print(url_for('item', id='1'))
-    print(url_for('item', id=2, next='/'))
-
 
 @app.route('/people/')
 def people():
@@ -88,7 +86,17 @@ def hello_world():
 @app.route('/custom_headers/')
 def headers():
     return {'headers': [1,2,3]}, 201, [('X-Request-Id', '100')]
-    
+
+with eng.connect() as con:
+    rs = con.execute('select * from user;')
+    for row in rs:
+        print(row)
+
+# test_request_context 在交互模式下产生请求上下文
+with app.test_request_context():
+    print(url_for('item', id='1'))
+    print(url_for('item', id=2, next='/'))
+    print(config.get('development').DB_URI)    
     
 if __name__ == '__main__':
     app.run(debug=app.debug)

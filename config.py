@@ -35,6 +35,12 @@ class DevelopmentConfig(Config):
     DEBUG = True
     SQLALCHEMY_DATABASE_URI = os.environ.get('DEV_DATABASE_URL') or \
         'sqlite:///' + os.path.join(basedir, 'data-dev.sqlite')
+    HOSTNAME = '127.0.0.1'
+    DATABASE = 'flaskweb'
+    USERNAME = 'root'
+    PASSWORD = '123456'
+    DB_URI = 'mysql+pymysql://{}:{}@{}/{}'.format(USERNAME, PASSWORD, HOSTNAME, DATABASE)
+    
 
 
 class TestingConfig(Config):
