@@ -39,6 +39,7 @@ class DevelopmentConfig(Config):
     DATABASE = 'flaskweb'
     USERNAME = 'root'
     PASSWORD = '123456'
+    # dialect+driver://username:password@host:port/database
     DB_URI = 'mysql+pymysql://{}:{}@{}/{}'.format(USERNAME, PASSWORD, HOSTNAME, DATABASE)
     
 

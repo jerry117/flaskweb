@@ -6,10 +6,13 @@ from werkzeug.wrappers import Response
 import pymysql
 from sqlalchemy import create_engine
 from config import config
+from ext import db
 
+# TODO  通过日志来记录慢查询。
 
 app = Flask(__name__, template_folder='../templates')
 app.config.from_object('config')
+db.init_app(app)
 eng = create_engine(config.get('development').DB_URI)
 
 
@@ -86,6 +89,12 @@ def hello_world():
 @app.route('/custom_headers/')
 def headers():
     return {'headers': [1,2,3]}, 201, [('X-Request-Id', '100')]
+
+@app.route('/users/', methods=['POST'])
+def users():
+    username = request.form.get('name')
+    user = User
+    
 
 with eng.connect() as con:
     rs = con.execute('select * from user;')

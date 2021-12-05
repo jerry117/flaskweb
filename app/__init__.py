@@ -7,11 +7,12 @@ from flask_login import LoginManager
 # from flask_pagedown import PageDown
 # 通过.pth文件解决导入问题。
 from config import config
+from ext import db
 
 bootstrap = Bootstrap()
 mail = Mail()
 moment = Moment()
-db = SQLAlchemy()
+# db = SQLAlchemy()
 # pagedown = PageDown()
 
 login_manager = LoginManager()

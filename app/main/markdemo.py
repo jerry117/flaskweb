@@ -17,6 +17,8 @@ from flask import Blueprint
 from flask_mail import Message, Mail
 from werkzeug.routing import BaseConverter
 import urllib
+from config import config
+
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
@@ -33,11 +35,15 @@ app.config['SECRET_KEY'] = 'hard to guess string'
 # mail.init_app(app)
 
 # 简单的配置sqlite数据库
-app.config['SQLALCHEMY_DATABASE_URI'] ='sqlite:///' + os.path.join(basedir, 'data.sqlite')
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'data.sqlite')
+app.config['SQLALCHEMY_DATABASE_URI'] = config.get('development').DB_URI
 app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
+# 数据库的操作
+# 进入flask  shell
+# 
 migrate = Migrate(app, db)
 
 class Role(db.Model):
