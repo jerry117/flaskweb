@@ -105,7 +105,9 @@ with eng.connect() as con:
 with app.test_request_context():
     print(url_for('item', id='1'))
     print(url_for('item', id=2, next='/'))
-    print(config.get('development').DB_URI)    
+    print(config.get('development').DB_URI)   
+
+ 
     
 if __name__ == '__main__':
     app.run(debug=app.debug)

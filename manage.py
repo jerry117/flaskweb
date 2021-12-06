@@ -7,6 +7,7 @@ from flask_migrate import Migrate
 
 app = create_app(os.getenv('FLASK_CONFIG') or 'default')
 # manager = Manager(app)
+# 数据库初始化
 migrate = Migrate(app, db)
 
 def make_shell_context():

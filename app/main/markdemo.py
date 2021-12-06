@@ -42,8 +42,9 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
 # 数据库的操作
-# 进入flask  shell
-# 
+# 初始化数据库  flask db init
+# 自动创建迁移脚本   flask db migrate -m 'initial migration'
+# 更新数据库 flask db upgrade
 migrate = Migrate(app, db)
 
 class Role(db.Model):
