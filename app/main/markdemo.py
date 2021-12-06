@@ -40,6 +40,10 @@ app.config['SQLALCHEMY_DATABASE_URI'] = config.get('development').DB_URI
 app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
+# 记录慢查询  后续需要进行补充代码
+app.config['DATABASE_QUERY_TIMEOUT'] = 0.01
+app.config['SQLALCHEMY_RECORD_QUERIES'] = True
+
 db = SQLAlchemy(app)
 # 数据库的操作
 # 初始化数据库  flask db init

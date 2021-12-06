@@ -1,17 +1,20 @@
 from flask import Flask, url_for, request, jsonify, render_template, abort, redirect, make_response, g
 from flask.views import View
 from flask.wrappers import Request
-from markdown import user
 from werkzeug.wrappers import Response
 import pymysql
 from sqlalchemy import create_engine
 from config import config
 from ext import db
+from app.models import User
 
 # TODO  通过日志来记录慢查询。
 
 app = Flask(__name__, template_folder='../templates')
 app.config.from_object('config')
+app.config['SQLALCHEMY_DATABASE_URI'] = config.get('development').DB_URI
+app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db.init_app(app)
 eng = create_engine(config.get('development').DB_URI)
 
@@ -25,13 +28,13 @@ class JsonResponse(Response):
         
 app.response_class = JsonResponse
 
-@app.url_value_preprocessor
-def get_site(endpoint, values):
-    g.site = values.pop('subdomain')
+# @app.url_value_preprocessor
+# def get_site(endpoint, values):
+#     g.site = values.pop('subdomain')
 
-@app.route('/2/', subdomain='<subdomain>')
-def index2():
-    return g.site
+# @app.route('/2/', subdomain='<subdomain>')
+# def index2():
+#     return g.site
         
 
 
@@ -90,14 +93,23 @@ def hello_world():
 def headers():
     return {'headers': [1,2,3]}, 201, [('X-Request-Id', '100')]
 
+# http 的post用法 http -f post http://xxxx.com  name=jerry
 @app.route('/users/', methods=['POST'])
 def users():
     username = request.form.get('name')
-    user = User
+    # 需要fix，参数问题导致对应不上
+    print(request.form)
+    user = User(request.form)
+    print('user id : {}'.format(user.id))
+    db.session.add(user)
+    db.session.commit()
+
+    return jsonify({'id':user.id})
+
     
 
 with eng.connect() as con:
-    rs = con.execute('select * from user;')
+    rs = con.execute('select * from users;')
     for row in rs:
         print(row)
 
