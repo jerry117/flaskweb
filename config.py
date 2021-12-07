@@ -42,6 +42,7 @@ class DevelopmentConfig(Config):
     # dialect+driver://username:password@host:port/database
     DB_URI = 'mysql+pymysql://{}:{}@{}/{}'.format(USERNAME, PASSWORD, HOSTNAME, DATABASE)
     SQLALCHEMY_DATABASE_URI = DB_URI
+    UPLOAD_FOLDER = '/tmp/permdir'
     
 
 

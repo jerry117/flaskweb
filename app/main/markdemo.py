@@ -182,6 +182,14 @@ def projects():
 @app.route('/about')
 def about():
     return 'the about page'
+
+# flask中有4个上下文变量
+# flask.current_app：应用上下文。他是当前app实例对象
+# flask.g： 应用上下文。处理请求时用作临时存储的对象
+# flask.request： 请求上下文。他封装了客户端发出的HTTP请求中的内容。
+# flask.session： 请求上下文。他存储了用户会话。
+
+
     
 
 if __name__ == '__main__':

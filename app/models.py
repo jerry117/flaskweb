@@ -363,5 +363,9 @@ class Comment(db.Model):
             raise ValidationError('comment does not have a body')
         return Comment(body=body)
 
+class PasteFile(db.Model):
+    __tablename__ = 'PasteFile'
+    
+
 
 db.event.listen(Comment.body, 'set', Comment.on_changed_body)
