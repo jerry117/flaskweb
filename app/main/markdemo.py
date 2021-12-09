@@ -189,11 +189,18 @@ def about():
 # flask.request： 请求上下文。他封装了客户端发出的HTTP请求中的内容。
 # flask.session： 请求上下文。他存储了用户会话。
 
+# app有6个钩子装饰器，被装饰的函数会注册到app中，它们将在不同阶段执行。
+# before_first_request 在处理第一次请求之前执行
+# before_request 在每次请求前执行
+# teardown_appcontext 不管是否有异常，注册的函数都会在每次请求之后执行
+# context_processor 上下文处理的装饰器，返回的字典中的键可以在上下文中使用
+# template_filter 在使用jinja2模板时候可以方便地注册过滤器
+# errorhandler errorhandler接收状态码，可以自定义返回这种状态码的响应的处理方法
 
     
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True)        
 
 # app.url_map  显示URL映射
 
