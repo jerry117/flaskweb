@@ -1,13 +1,18 @@
 from datetime import datetime
+from hashlib import new
+from operator import truediv
 from os import abort
-from flask import render_template, session, redirect, url_for, jsonify
-from libs.utils.utils import humanize_bytes
+from flask import json, render_template, session, redirect, url_for, jsonify, send_file
+from libs.utils.utils import get_file_path, humanize_bytes
 from werkzeug.wrappers import request
 from . import main
 from .forms import NameForm
-from .. import db
+from .. import db, mako
 # 需要使用这个来进行模块的使用验证python3 -m app.main.views
-from ..models import PasteFile, User
+from app.models.models import PasteFile, User
+import os
+
+ONE_MONTH = 60 * 60 * 24 * 30
 
 @main.route('/', methods=['GET', 'POST'])
 def index():
@@ -39,7 +44,7 @@ def user(name):
     return render_template('user1.html', name=name)
 
 
-@main.route('/i/', methods=['GET', 'POST'])
+@main.route('/index/', methods=['GET', 'POST'])
 def index1():
     if request.method == 'POST':
         uploaded_file = request.files['file']
@@ -68,8 +73,73 @@ def index1():
             'quoteurl': paste_file.quoteurl,
 
         })
-    return render_template(index2.html, **locals())
+    return render_template('index2.html', **locals())
     
+@main.route('/r/<img_hash>')
+def rsize(img_hash):
+    w = request.args.get('w')
+    h = request.args.get('h')
+
+    old_paste = PasteFile.get_by_filehash(img_hash)
+    new_paste = PasteFile.rsize(old_paste, w, h)
+
+    return new_paste.url_i
+
+
+@main.route('/d/<filehash>', methods=['GET'])  
+def download(filehash):
+    paste_file = PasteFile.get_by_filehash(filehash)
+    return send_file(open(paste_file.path, 'rb'), mimetype='application/octet-stream', cache_timeout=ONE_MONTH, as_attachment=True, attachment_filename=paste_file.filename.encode('utf-8'))
+
+
+@main.route('/p/<filehash>')
+def preview(filehash):
+    paste_file = PasteFile.get_by_filehash(filehash)
+
+    if not paste_file:
+        filepath = get_file_path((filehash))
+        if not (os.path.exists(filepath)) and (not os.path.islink(filepath)):
+            return abort(404)
+        paste_file = PasteFile.create_by_old_paste(filehash)
+        db.session.add(paste_file)
+        db.session.commit()
+    
+    return render_template('success.html', p=paste_file)
+
+@main.route('/s/<symlink>')
+def s(symlink):
+    paste_file = PasteFile.ge
+    return redirect(paste_file.url_p)
+
+@main.route('/j/', methods=['POST'])
+def j():
+    uploaded_file = request.files['file']
+
+    if uploaded_file:
+        paste_file = PasteFile.create_by_upload_file(uploaded_file)
+        db.session.add(paste_file)
+        db.session.commit()
+        width, height = paste_file.image_size
+
+        return jsonify({
+            'url': paste_file.url_i,
+            'short_url': paste_file.url_s,
+            'origin_filename': paste_file.filename,
+            'hash': paste_file.filehash,
+            'width': width,
+            'height': height
+        })
+    return abort(400)
+
+
+@main.after_request
+def after_request(response):
+    response.headers['Access-Control-Allow-Origin'] = '*'
+    response.headers['Access-Control-Allwo-Headers'] = 'Content-Type'
+    return response
+    
+    
+
 
 # @app.route('/', methods=['GET', 'POST'])
 # def index():

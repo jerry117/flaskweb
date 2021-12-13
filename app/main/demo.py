@@ -6,7 +6,7 @@ import pymysql
 from sqlalchemy import create_engine
 from config import config
 from ext import db
-from app.models import User
+from app.models.models import User
 
 # TODO  通过日志来记录慢查询。
 

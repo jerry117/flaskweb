@@ -1,14 +1,22 @@
 from datetime import datetime
 import hashlib
+from libs.utils.utils import get_file_md5, get_file_path
 from werkzeug.security import generate_password_hash, check_password_hash
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from markdown import markdown
 import bleach
-from flask import current_app, request, url_for
+from flask import current_app, request, url_for, abort
 from flask_login import UserMixin, AnonymousUserMixin
 from app.exceptions import ValidationError
-from . import db, login_manager
+from app import db, login_manager
 import uuid
+import os
+import cropresize2
+from PIL import Image
+import short_url
+from werkzeug.utils import cached_property
+import magic
+
 
 
 class Permission:
@@ -391,9 +399,93 @@ class PasteFile(db.Model):
     def get_by_md5(cls, filemd5):
         return cls.query.filter_by(filemd5=filemd5).first()
         
+    @property
+    def path(self):
+        return get_file_path(self.filehash)
+
+    @classmethod
+    def create_by_upload_file(cls, uploaded_file):
+        rst = cls(uploaded_file.filename, uploaded_file.mimetype, 0)
+        uploaded_file.save(rst.path)
+        with open(rst.path, 'rb') as f:
+            filemd5 = get_file_md5(f)
+            uploaded_file = cls.get_by_md5(filemd5)
+            if uploaded_file:
+                os.remove(rst.path)
+                return uploaded_file
+        filestat = os.stat(rst.path)
+        rst.size = filestat.st_size
+        rst.filemd5 = filemd5
+        return rst
+
+    @classmethod
+    def rsize(cls, old_paste, weight, height):
+        assert old_paste.is_image, TypeError('unsupported image type.')
+        f = open(old_paste.path, 'rb')
+        im = Image.open(f)
+
+        img = cropresize2.crop_resize(im, (int(weight), int(height)))
+
+        rst = cls(old_paste.filename, old_paste.mimetype, 0)
+        img.save(rst.path)
+        filestat = os.stat(rst.path)
+        rst.size = filestat.st_size
+        return rst
+        
+    @classmethod
+    def get_by_filehash(cls, filehash, code=404):
+        return cls.query.filter_by(filehash=filehash).first() or abort(code)
 
 
+
+    def get_url(self, subtype, is_symlink=False):
+        hash_or_link = self.symlink if is_symlink else self.filehash
+        return 'http://{host}/{subtype}/{hash_or_link}'.format(subtype=subtype, host=request.host, hash_or_link=hash_or_link)
+        
+    @property
+    def url_i(self):
+        return self.get_url('i')
     
+    # 文件预览地址
+    @property
+    def url_p(self):
+        return self.get_url('p')
 
+    # 文件短链地址
+    @property
+    def url_s(self):
+        return self.get_url('s', is_symlink=True)
+
+    # 文件下载地址
+    @property
+    def url_d(self):
+        return self.get_url('d')
+
+    # 短链
+    @cached_property
+    def symlink(self):
+        return short_url.encode_url(self.id)
+    
+    # 通过短链获取对应的数据条目
+    @classmethod
+    def get_by_symlink(cls, symlink, code=404):
+        id = short_url.decode_url(symlink)
+        return cls.query.filter_by(id=id).first() or abort(code)
+
+    @classmethod
+    def create_by_old_paste(cls, filehash):
+        filepath = get_file_path(filehash)
+        mimetype = magic.from_file(filepath, mime=True)
+        filestat = os.stat(filepath)
+        size = filestat.st_size
+
+        rst = cls(filehash, mimetype, size, filehash=filehash)
+        return rst
+
+
+        
+        
+        
+        
 
 db.event.listen(Comment.body, 'set', Comment.on_changed_body)
