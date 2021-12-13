@@ -2,7 +2,7 @@ from flask import Blueprint
 # 先引入在给别的文件进行import
 main = Blueprint('main', __name__)
 
-from . import views, errors
+from . import views, errors, forms
 # from ..models import Permission
 # from app.models import Permission
 

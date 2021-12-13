@@ -27,4 +27,4 @@ def humanize_bytes(bytesize, precision=2):
     for factor, suffix in abbrevs:
         if bytesize >= factor:
             break
-    return '{} {:f} {}'.format(precision, bytesize/factor, suffix)
+    return '%.*f %s' % (precision, bytesize / factor, suffix)

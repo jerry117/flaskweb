@@ -2,9 +2,8 @@ from datetime import datetime
 from hashlib import new
 from operator import truediv
 from os import abort
-from flask import json, render_template, session, redirect, url_for, jsonify, send_file
+from flask import json, render_template, session, redirect, url_for, jsonify, send_file, request
 from libs.utils.utils import get_file_path, humanize_bytes
-from werkzeug.wrappers import request
 from . import main
 from .forms import NameForm
 from .. import db, mako
@@ -137,8 +136,9 @@ def after_request(response):
     response.headers['Access-Control-Allow-Origin'] = '*'
     response.headers['Access-Control-Allwo-Headers'] = 'Content-Type'
     return response
-    
-    
+
+
+
 
 
 # @app.route('/', methods=['GET', 'POST'])
