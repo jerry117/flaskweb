@@ -31,8 +31,8 @@ def index():
             session['known'] = True
         session['name'] = form.name.data
         form.name.data = ''
-        # 重定向到这个地址
-        return redirect(url_for('index'))
+        # 重定向到这个地址  加.为了指向当前的地址不然会找到main里的index
+        return redirect(url_for('.index'))
     return render_template('index1.html', form = form, name = session.get('name'), known = session.get('known', False), current_time=datetime.utcnow())
 
 
@@ -40,10 +40,10 @@ def index():
 def user(name):
     # return '<h1>hello %s !</h1>' % name
     # 使用渲染模板
-    return render_template('user1.html', name=name)
+    return render_template('user/user1.html', name=name)
 
 
-@main.route('/index/', methods=['GET', 'POST'])
+@main.route('/index1/', methods=['GET', 'POST'])
 def index1():
     if request.method == 'POST':
         uploaded_file = request.files['file']

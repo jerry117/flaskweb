@@ -146,7 +146,7 @@ def internal_server_error(e):
 
 
 @app.route('/', methods=['GET', 'POST'])
-def index():
+def index10():
     # form = NameForm()
     # if form.validate_on_submit():
     #     old_name = session.get('name')
@@ -169,7 +169,7 @@ def index():
         session['name'] = form.name.data
         form.name.data = ''
         # 重定向到这个地址
-        return redirect(url_for('index'))
+        return redirect(url_for('index10'))
     return render_template('index1.html', form = form, name = session.get('name'), known = session.get('known', False), current_time=datetime.utcnow())
 
 # 唯一URLdemo
