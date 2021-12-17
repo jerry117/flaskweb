@@ -1,6 +1,7 @@
 from flask import Flask, session, redirect, url_for, flash
 from flask import request
 from flask import render_template
+import flask
 from flask_bootstrap import Bootstrap
 from flask_moment import Moment
 from datetime import datetime
@@ -299,5 +300,68 @@ if __name__ == '__main__':
 # DELETE：删除资源。DELETE操作有副作用，但也是幂等的
 # OPTIONS：获取资源支持的所有 HTTP 方法。
 # PATCH：局部更新，修改某个已有的资源
+
+
+
+# flask中的9种信号  常用6种
+# 1、flask.template_rendered: 模板渲染成功的时候发送，这个信号与模板实例template上下文的字典一起调用。
+# demo：
+# def log_template_renders(sender, template, context, **extra):
+#     sender.logger.debug('rendering template "%s" with context %s', template.name or 'string template', context)
+
+# from flask import template_rendered
+# template_rendered.connect(log_template_renders, app)
+
+# 2、flask.request_started: 建立请求上下文后，在请求处理开始前发送，订阅者可以用request之类的标准全局代理访问请求。
+# demo
+# def log_request(sender, **extra):
+#     sender.logger.debug('request context is set up')
+
+# from flask import request_started
+# request_started.connect(log_request, app)
+
+
+# 3、flask.request_finished: 在响应发送给客户端之前发送，可以传递response。
+# def log_response(sender, response, **extra):
+#     sender.logger.debug('request context is about to close down. ' + 'response: %s', response)
+
+# from flask import request_finished
+# request_finished.connect(log_response, app)
+
+# 4、flask.got_request_exception: 在请求处理中抛出异常时发送，异常本身会通过exception传递到订阅函数
+# demo
+# def log_exception(sender, exception, **extra):
+#     sender.logger.debug('got exception during processing:%s', exception)
+
+# from flask import got_request_exception
+# got_request_exception(log_exception, app)
+
+# 5、flask.request_tearing_down: 在请求销毁时发送，它总是被调用，即使发生异常。
+# demo
+# def close_db_connection(sender, **extra):
+#     session.close()
+
+# from flask import request_tearing_down
+# request_tearing_down.connect(close_db_connection, app)
+
+# 6、flask.appcontext_tearing_down: 在应用上下文销毁时发送，它总是被调用，即使发生异常。
+# demo
+# def close_db_connection(sender, **extra):
+#     session.close()
+
+# from flask import appcontext_tearing_down
+# appcontext_tearing_down.connect(close_db_connection, app)
+
+
+    
+
+    
+
+    
+    
+
+
+
+    
 
 
