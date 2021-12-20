@@ -352,16 +352,3 @@ if __name__ == '__main__':
 # from flask import appcontext_tearing_down
 # appcontext_tearing_down.connect(close_db_connection, app)
 
-
-    
-
-    
-
-    
-    
-
-
-
-    
-
-

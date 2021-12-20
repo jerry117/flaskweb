@@ -483,9 +483,5 @@ class PasteFile(db.Model):
         return rst
 
 
-        
-        
-        
-        
 
 db.event.listen(Comment.body, 'set', Comment.on_changed_body)
