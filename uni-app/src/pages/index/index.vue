@@ -4,6 +4,10 @@
 		<view>
 			<text class="title">{{title}}</text>
 		</view>
+		<view class="button" >
+			<button class="btn" @click="jumpPage">个人中心</button>
+			
+		</view>
 	</view>
 </template>
 
@@ -11,13 +15,18 @@
 	export default {
 		data() {
 			return {
-				title: 'Hello'
+				title: '首页'
 			}
 		},
 		onLoad() {
 
 		},
 		methods: {
+			jumpPage(){
+				uni.navigateTo({
+					url: '/pages/users/index'
+				})
+			}
 
 		}
 	}
@@ -45,5 +54,16 @@
 	.title {
 		font-size: 36rpx;
 		color: #8f8f94;
+	}
+	.button {
+		color: red;
+		/* background-color: yellow; */
+	}
+	.btn {
+		/* color: red; */
+		/* background-color: red; */
+		color: black;
+		display: block;
+		margin: 200rpx
 	}
 </style>

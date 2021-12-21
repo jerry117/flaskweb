@@ -5,7 +5,15 @@
 			"style": {
 				"navigationBarTitleText": "uni-app"
 			}
+			
+		},
+		{
+			"path": "pages/users/index",
+			"style": {
+				"navigationBarTitleText": "users-app"
+			}
 		}
+
 	],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
