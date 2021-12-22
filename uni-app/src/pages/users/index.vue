@@ -5,7 +5,7 @@
 			<text class="title">{{title}}</text>
 		</view> -->
         <view class="shading">
-            <image class='logo' src="/static/logo.png" ></image>
+            <image class='logo' src="/static/images.jpeg" ></image>
         </view>
 
         <view class="whiteBg">
