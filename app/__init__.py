@@ -18,7 +18,9 @@ moment = Moment()
 # pagedown = PageDown()
 
 login_manager = LoginManager()
-# login_manager.login_view = 'auth.login'
+login_manager.login_view = 'auth.login'
+login_manager.login_message = u'请登录后操作'  #设置登录提示消息
+login_manager.login_message_category = 'info' #设置消息分类
 
 def create_app(config_name):
     # app = Flask(__name__)

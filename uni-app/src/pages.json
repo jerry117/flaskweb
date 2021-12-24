@@ -3,14 +3,14 @@
 		{
 			"path": "pages/index/index",
 			"style": {
-				"navigationBarTitleText": "uni-app"
+				"navigationBarTitleText": "一野笃鸠你"
 			}
 			
 		},
 		{
 			"path": "pages/users/index",
 			"style": {
-				"navigationBarTitleText": "users-app"
+				"navigationBarTitleText": "登录"
 			}
 		}
 
