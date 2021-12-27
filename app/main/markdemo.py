@@ -18,7 +18,7 @@ from flask import Blueprint
 from flask_mail import Message, Mail
 from werkzeug.routing import BaseConverter
 import urllib
-from config import config
+import config.config as config
 
 
 basedir = os.path.abspath(os.path.dirname(__file__))
@@ -37,7 +37,7 @@ app.config['SECRET_KEY'] = 'hard to guess string'
 
 # 简单的配置sqlite数据库
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'data.sqlite')
-app.config['SQLALCHEMY_DATABASE_URI'] = config.get('development').DB_URI
+app.config['SQLALCHEMY_DATABASE_URI'] = config.config.get('development').DB_URI
 app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
@@ -115,7 +115,7 @@ def list2(page_names):
 def user(name):
     # return '<h1>hello %s !</h1>' % name
     # 使用渲染模板
-    return render_template('user1.html', name=name)
+    return render_template('user/user1.html', name=name)
 
 
 @app.errorhandler(404)

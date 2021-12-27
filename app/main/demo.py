@@ -4,7 +4,7 @@ from flask.wrappers import Request
 from werkzeug.wrappers import Response
 import pymysql
 from sqlalchemy import create_engine
-from config import config
+import config.config as  config
 from ext import db
 from app.models.models import User
 
@@ -12,11 +12,11 @@ from app.models.models import User
 
 app = Flask(__name__, template_folder='../templates')
 app.config.from_object('config')
-app.config['SQLALCHEMY_DATABASE_URI'] = config.get('development').DB_URI
+app.config['SQLALCHEMY_DATABASE_URI'] = config.config.get('development').DB_URI
 app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db.init_app(app)
-eng = create_engine(config.get('development').DB_URI)
+eng = create_engine(config.config.get('development').DB_URI)
 
 
 class JsonResponse(Response):
@@ -117,7 +117,7 @@ with eng.connect() as con:
 with app.test_request_context():
     print(url_for('item', id='1'))
     print(url_for('item', id=2, next='/'))
-    print(config.get('development').DB_URI)   
+    print(config.config.get('development').DB_URI)   
 
  
     

@@ -1,9 +1,9 @@
 import os
 import hashlib
 from functools import partial
-from config import config
+import  config.config as config
 
-UPLOAD_FOLDER = config.get('development').UPLOAD_FOLDER
+UPLOAD_FOLDER = config.config.get('development').UPLOAD_FOLDER
 
 HERE = os.path.abspath(os.path.dirname(__file__))
 
