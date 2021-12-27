@@ -1,9 +1,13 @@
+from functools import _CacheInfo
 import os
+
+from app.libs.utils.yamlUtil import load
 from re import DEBUG
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 # DEBUG = False
 DEBUG = True
+conf = load(os.path.abspath('.')+'/config/config.yaml')
 
 class Config:
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'hard to guess string'
@@ -35,10 +39,10 @@ class DevelopmentConfig(Config):
     DEBUG = True
     # SQLALCHEMY_DATABASE_URI = os.environ.get('DEV_DATABASE_URL') or \
         # 'sqlite:///' + os.path.join(basedir, 'data-dev.sqlite')
-    HOSTNAME = '127.0.0.1'
-    DATABASE = 'flaskweb'
-    USERNAME = 'root'
-    PASSWORD = '123456'
+    HOSTNAME = conf['db']['host']
+    DATABASE = conf['db']['database']
+    USERNAME = conf['db']['user']
+    PASSWORD = conf['db']['password']
     # dialect+driver://username:password@host:port/database
     DB_URI = 'mysql+pymysql://{}:{}@{}/{}'.format(USERNAME, PASSWORD, HOSTNAME, DATABASE)
     SQLALCHEMY_DATABASE_URI = DB_URI

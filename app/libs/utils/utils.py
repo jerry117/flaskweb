@@ -1,7 +1,8 @@
 import os
 import hashlib
 from functools import partial
-import  config.config as config
+# import  config.config as config
+from config import config
 
 UPLOAD_FOLDER = config.config.get('development').UPLOAD_FOLDER
 
@@ -27,4 +28,4 @@ def humanize_bytes(bytesize, precision=2):
     for factor, suffix in abbrevs:
         if bytesize >= factor:
             break
-    return '%.*f %s' % (precision, bytesize / factor, suffix)
+    return '%.*f %s' % (precision, bytesize / factor, suffix) 
