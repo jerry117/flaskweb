@@ -37,9 +37,8 @@
 </template>
 
 <script>
-// import image from '../API/image/image.vue'
+    import {login} from '@/apis/user'
 	export default {
-//   components: { image },
 		data() {
 			return {
 				title: '登录',
@@ -52,6 +51,8 @@
 		},
 		methods: {
             submit(){
+                console.log(232)
+                login({'account': 122, 'password': 23424})
                 console.log(111)
             }
 

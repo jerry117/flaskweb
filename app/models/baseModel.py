@@ -123,4 +123,4 @@ class BaseModel(db.Model):
         return cls.query.filter(**kwargs)
         
         
-        
+         
