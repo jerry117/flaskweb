@@ -29,6 +29,7 @@ class Permission:
 
 class Role(db.Model):
     __tablename__ = 'roles'
+    __table_args__ = {'extend_existing': True}
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64), unique=True)
     default = db.Column(db.Boolean, default=False, index=True)
@@ -82,6 +83,7 @@ class Role(db.Model):
 
 class Follow(db.Model):
     __tablename__ = 'follows'
+    __table_args__ = {'extend_existing': True}
     follower_id = db.Column(db.Integer, db.ForeignKey('users.id'),
                             primary_key=True)
     followed_id = db.Column(db.Integer, db.ForeignKey('users.id'),
@@ -91,6 +93,7 @@ class Follow(db.Model):
 
 class User(UserMixin, db.Model):
     __tablename__ = 'users'
+    __table_args__ = {'extend_existing': True}
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(64), unique=True, index=True)
     username = db.Column(db.String(64), unique=True, index=True)
@@ -106,6 +109,7 @@ class User(UserMixin, db.Model):
     login_count = db.Column(db.Integer, default=0)
     last_login_ip = db.Column(db.String(128), default='unknown')
     posts = db.relationship('Post', backref='author', lazy='dynamic')
+    status = db.Column(db.Integer, default=1, comment='状态，1为启用，2为冻结')
     followed = db.relationship('Follow',
                                foreign_keys=[Follow.follower_id],
                                backref=db.backref('follower', lazy='joined'),
@@ -117,6 +121,11 @@ class User(UserMixin, db.Model):
                                 lazy='dynamic',
                                 cascade='all, delete-orphan')
     comments = db.relationship('Comment', backref='author', lazy='dynamic')
+
+
+    @classmethod
+    def get_first(cls, **kwargs):
+        return cls.query.filter_by(**kwargs).first()
 
     @staticmethod
     def add_self_follows():
@@ -299,6 +308,7 @@ def load_user(user_id):
 
 class Post(db.Model):
     __tablename__ = 'posts'
+    __table_args__ = {'extend_existing': True}
     id = db.Column(db.Integer, primary_key=True)
     body = db.Column(db.Text)
     body_html = db.Column(db.Text)
@@ -340,6 +350,7 @@ db.event.listen(Post.body, 'set', Post.on_changed_body)
 
 class Comment(db.Model):
     __tablename__ = 'comments'
+    __table_args__ = {'extend_existing': True}
     id = db.Column(db.Integer, primary_key=True)
     body = db.Column(db.Text)
     body_html = db.Column(db.Text)
@@ -376,6 +387,7 @@ class Comment(db.Model):
 
 class PasteFile(db.Model):
     __tablename__ = 'PasteFile'
+    __table_args__ = {'extend_existing': True}
     id = db.Column(db.Integer, primary_key=True)
     filename = db.Column(db.String(5000), nullable=False)
     filehash = db.Column(db.String(128), nullable=False, unique=True)
