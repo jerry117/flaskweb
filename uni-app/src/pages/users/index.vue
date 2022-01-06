@@ -14,15 +14,22 @@
                     <view class="item">
                         <view class="acea-row">
                             <image src="/static/images/phone_1.png" style="width: 24rpx; height: 34rpx;"></image>
-                            <input class='input' type="text" v-model="account" placeholder="输入手机号码" maxlength='11' required >
+                            <input class='input' type="text" ref="account" v-model="account" placeholder="输入手机号码" maxlength='11' required >
                         </view>
                     </view>
+
                     <view class="item">
                         <view class="acea-row">
-                            <image src="/static/images/code_1.png" style="width: 28rpx; height: 32rpx;"></image>
-                            <input class='input' type="password" v-model="password" placeholder="填写登录密码" required >
+                                <image src="/static/images/code_1.png" @click="changePwd" style="width: 28rpx; height: 32rpx;"></image>
+                            <div v-if="pwdFlag">
+                                <input class='input' type="text" ref="password" v-model="password" placeholder="填写登录密码" required >
+                            </div>
+                            <div v-else>
+                                <input class='input' type="password" ref="password" v-model="password" placeholder="填写登录密码" required >
+                            </div>
                         </view>
                     </view>
+
                 </form>
 
             </view>
@@ -44,6 +51,7 @@
 				title: '登录',
                 account: '',
                 password: '',
+                pwdFlag:true
 			}
 		},
 		onLoad() {
@@ -51,13 +59,16 @@
 		},
 		methods: {
             submit(){
-                console.log(232)
-                login({'account': 122, 'password': 23424})
-                console.log(111)
+                login({'account': this.account, 'password': this.password})
+            },
+            changePwd(){
+                this.pwdFlag = !this.pwdFlag;
+            }
+
             }
 
 		}
-	}
+	
 </script>
 
 <style >
@@ -65,8 +76,6 @@
 
 .login-wrapper {
     padding: 30rpx;
-
-    
     
 }
 .shading {

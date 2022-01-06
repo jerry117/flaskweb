@@ -11,5 +11,14 @@ export const constantRoutes = [
         path: '/login',
         component: () => import('@/pages/users/index'),
         hidden: true
-    }
+    },
+    // {
+    //     path: '/',
+    //     component: Layout,
+
+    // }
+
+
 ]
+
+

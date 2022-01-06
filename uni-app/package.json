@@ -111,7 +111,8 @@
     "node-sass": "^7.0.1",
     "postcss-comment": "^2.0.0",
     "sass-loader": "^12.4.0",
-    "vue-template-compiler": "^2.6.11"
+    "vue-template-compiler": "^2.6.11",
+    "sass": "1.26.8"
   },
   "browserslist": [
     "Android >= 4.4",
