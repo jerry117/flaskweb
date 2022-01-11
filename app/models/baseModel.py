@@ -1,5 +1,4 @@
 from datetime import datetime
-from sqlalchemy.orm import defaultload
 from werkzeug.exceptions import abort
 
 from flask_login import current_user
@@ -8,6 +7,7 @@ from sqlalchemy import MetaData
 from contextlib import contextmanager
 
 from config.config import conf
+from libs.utils.jsonUtil import JsonUtil
 
 
 
@@ -60,7 +60,7 @@ naming_convention = {
 db = SQLAlchemy(query_class=Qeury, metadata=MetaData(naming_convention=naming_convention), use_native_unicode='utf8mb4')
 
 
-class BaseModel(db.Model):
+class BaseModel(db.Model, JsonUtil):
     '''基类模型'''
     __abstract__ = True
     # 考虑一下integer是否需要加括号。
@@ -80,17 +80,17 @@ class BaseModel(db.Model):
         return datetime.strftime(self.updated_time, "%Y-%m-%d %H:%M:%S")
     
     def create(self, attrs_dict: dict, *args):
-
-        try:
-            setattr(self, 'create_user', current_user.id)
-            setattr(self, 'update_user', current_user.id)
-        except Exception as error :
-            pass
-        for key, value in attrs_dict.items():
-            if hasattr(self, key) and key != 'id':
-                setattr(self, key, self.dumps(value) if key in args else value)
-
-
+        with db.auto_commit():
+            try:
+                setattr(self, 'create_user', current_user.id)
+                setattr(self, 'update_user', current_user.id)
+            except Exception as error :
+                pass
+            for key, value in attrs_dict.items():
+                if hasattr(self, key) and key != 'id':
+                    setattr(self, key, self.dumps(value) if key in args else value)
+            db.session.add(self)
+        return self
 
     def update(self, attrs_dict:dict, *args):
 
@@ -98,9 +98,10 @@ class BaseModel(db.Model):
             setattr(self, 'update_user', current_user.id)
         except Exception as error :
             pass
-        for key, value in attrs_dict.items():
-            if hasattr(self, key) and key != 'id':
-                setattr(self, key, self.dumps(value) if key in args else value)
+        with db.auto_commit():
+            for key, value in attrs_dict.items():
+                if hasattr(self, key) and key not in ['id', 'num']:
+                    setattr(self, key, self.dumps(value) if key in args else value)
         
     def is_create_user(self, user_id):
         return self.created_user == user_id
@@ -122,5 +123,22 @@ class BaseModel(db.Model):
     def get_filter(cls, **kwargs):
         return cls.query.filter(**kwargs)
         
-        
-         
+    @classmethod
+    def change_sort(cls, id_list, page_num, page_size):
+        with db.auto_commit():
+            for index, case_id in enumerate(id_list):
+                case = cls.get_first(id=case_id)
+                case.num = (page_num - 1) * page_size + index
+               
+    @classmethod
+    def to_dict(self, to_dict:list = [], pop_list:list = []):
+        dict_data = {}
+        pop_list.extend(['created_time', 'update_time'])
+        for column in self.__table__.columns:
+            if column.name not in pop_list:
+                data = getattr(self, column.name)
+                dict_data[column.name] = data if column.name not in to_dict else self.loads(data)
+        dict_data.update({'created_time': self.str_created_time, 'update_time': self.str_update_time})
+        return dict_data
+
+    
