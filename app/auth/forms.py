@@ -2,7 +2,7 @@ from flask_login import current_user   # 匿名用户
 from wtforms import StringField, IntegerField, Form
 from wtforms.validators import ValidationError, Length, DataRequired
 
-from app.models.models import User, Role
+from app.auth.models import User, Role
 from ..forms.baseForm import BaseForm
 
 

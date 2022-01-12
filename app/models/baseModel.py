@@ -125,7 +125,7 @@ class BaseModel(db.Model, JsonUtil):
         
     @classmethod
     def change_sort(cls, id_list, page_num, page_size):
-        with db.auto_commit():
+        with db.auto_commit(): 
             for index, case_id in enumerate(id_list):
                 case = cls.get_first(id=case_id)
                 case.num = (page_num - 1) * page_size + index

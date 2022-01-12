@@ -9,6 +9,11 @@ A simple flaskweb project
 ```bash
 pip install -r requirements.txt
 ```
+## 数据库表操作
+数据库的操作
+初始化数据库  flask db init
+自动创建迁移脚本   flask db migrate -m 'initial migration'
+更新数据库 flask db upgrade
 
 ## 运行flask
 

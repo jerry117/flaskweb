@@ -52,3 +52,31 @@ class User(UserMixin, BaseModel):
     def verify_password(self, password):
         """ 校验密码 """
         return check_password_hash(self.password_hash, password)
+
+    def generate_reset_token(self, expiration=conf['token_time_out']):
+        """ 生成token，默认有效期一个小时 """
+        return Serializer(current_app.config['SECRET_KEY'], expiration).dumps({'id': self.id, 'name': self.name}).decode('utf-8')
+
+
+    @staticmethod
+    def parse_token(token):
+        """ 校验token是否过期，或者是否合法 """
+        try:
+            data = Serializer(current_app.config['SECRET_KEY']).loads(token.encode('utf-8'))
+            return data
+        except:
+            return False    
+    
+    def to_dict(self, *args, **kwargs):
+        return super(User, self).to_dict(pop_list=['password_hash'])
+
+    def can(self, permission_name):
+        """ 判断当前用户是否有当前请求的权限 """
+        permission = Permission.query.filter_by(name=permission_name).first()
+        # return permission is not None and self.role is not None and permission in self.role.permission
+        return permission is not None
+
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))

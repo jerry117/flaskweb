@@ -3,7 +3,7 @@ from flask_login import login_user, logout_user, current_user
 from libs.utils import restful
 from . import auth
 from app.models.baseModel import db
-from models.models import User
+from .models import User
 from .forms import (LoginForm)
 
 

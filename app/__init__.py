@@ -7,7 +7,8 @@ from flask_login import LoginManager
 # from flask_pagedown import PageDown
 # 通过.pth文件解决导入问题。
 import  config.config as config
-from ext import db, mako
+from ext import mako
+from app.models.baseModel import db
 from libs.utils.utils import get_file_path
 from werkzeug.middleware.shared_data import SharedDataMiddleware
 
@@ -25,6 +26,7 @@ login_manager.login_message_category = 'info' #设置消息分类
 def create_app(config_name):
     # app = Flask(__name__)
     app = Flask(__name__,template_folder='templates', static_folder='static')
+    # print(config.config[config_name]) 
     app.config.from_object(config.config[config_name])
     config.config[config_name].init_app(app)
     app.wsgi_app = SharedDataMiddleware(app.wsgi_app, {'/i/': get_file_path()})
