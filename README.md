@@ -15,6 +15,8 @@ pip install -r requirements.txt
 自动创建迁移脚本   flask db migrate -m 'initial migration'
 更新数据库 flask db upgrade
 
+todo 还是需要一个统一管理表的脚本
+
 ## 运行flask
 
 ```bash
