@@ -59,7 +59,10 @@
 		},
 		methods: {
             submit(){
-                login({'account': this.account, 'password': this.password})
+                login({'account': this.account, 'password': this.password}).then(res => {
+                    console.log(3424245)
+                })
+                .catch(res => {})
             },
             changePwd(){
                 this.pwdFlag = !this.pwdFlag;

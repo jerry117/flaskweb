@@ -8,11 +8,15 @@ import VueClipboard from 'vue-clipboard2'  // 复制内容到粘贴板
 // import 'normalize.css/normalize.css' // CSS重置的现代替代方案
 // import '@/styles/index.scss' // 全局css
 
+import router from './router'
+// import store from './store'
+
 Vue.config.productionTip = false
 
 App.mpType = 'app'
 
-const app = new Vue({
-  ...App
+new Vue({
+  el: '#app',
+  router,
+  render: h => h(App)
 })
-app.$mount()
