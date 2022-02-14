@@ -28,7 +28,24 @@ class CreateUserForm(BaseForm):
         '''校验角色存在'''
         if Role.get_first(id=field.data):
             raise ValidationError(f'id为 {field.data} 的角色不存在')
-                
+
+
+class ChangePasswordForm(BaseForm):
+    '''修改密码的校验'''
+    oldPassword = StringField(validators=[Length(6, 18, message='密码长度长度为6~18位')])
+    newPassword = StringField(validators=[Length(6, 18, message='密码长度长度为6~18位')])
+    surePassword = StringField(validators=[Length(6, 18, message='密码长度长度为6~18位')])
+
+    def validate_oldPassword(self, field):
+        '''校验旧密码是否正确'''
+        if not current_user.verify_password(field.data):
+            raise ValidationError(f'旧密码 {field.data} 错误')
+
+    def validate_surePassword(self, field):
+        '''校验两次密码是否一致'''
+        if self.newPassword.data != field.data:
+            raise ValidationError(f'新密码 {self.newPassword} 与确认密码 {field.data} 不一致')
+                    
 
 class LoginForm(BaseForm):
     '''登录校验'''
@@ -44,5 +61,3 @@ class LoginForm(BaseForm):
             raise ValidationError(f'账号冻结')
         setattr(self, 'user', user)
         
-
-

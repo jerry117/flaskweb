@@ -39,3 +39,4 @@ class BaseForm(Form):
         for key, value in kwargs.items():
             if hasattr(self, key):
                 getattr(self, key).data = value
+
