@@ -15,7 +15,13 @@ pip install -r requirements.txt
 自动创建迁移脚本   flask db migrate -m 'initial migration'
 更新数据库 flask db upgrade
 
-todo 还是需要一个统一管理表的脚本
+## 初始化数据库表结构
+python dbMigration.py db init
+python dbMigration.py db migrate
+python dbMigration.py db upgrade
+
+## 初始化数据
+python dbMigration.py init
 
 ## 运行flask
 

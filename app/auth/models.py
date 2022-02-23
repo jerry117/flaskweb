@@ -17,6 +17,7 @@ roles_permissions = db.Table(
 
 
 class Role(BaseModel):
+    ''' 角色表 '''
     __tablename__ = 'role'
     name = db.Column(db.String(30), unique=True, comment='角色名称')
     users = db.relationship('User', back_populates='role')
@@ -79,4 +80,4 @@ class User(UserMixin, BaseModel):
 
 @login_manager.user_loader
 def load_user(user_id):
-    return User.query.get(int(user_id))
+    return User.query.get(int(user_id)) 
