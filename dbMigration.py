@@ -7,3 +7,4 @@ from flask_migrate import Migrate, MigrateCommand
 from app.models.baseModel import db
 from app.auth.models import User, Permission, Role
 # from app.
+
