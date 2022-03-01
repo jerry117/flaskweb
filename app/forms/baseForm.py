@@ -2,9 +2,9 @@ from flask import request
 from flask_login import current_user
 from wtforms import Form, IntegerField
 
-# from libs.utils.utils import JsonUtil
+from libs.utils.jsonUtil import JsonUtil
 
-class BaseForm(Form):
+class BaseForm(Form, JsonUtil):
     """ 初始化Form校验基类，并初统一处理请求参数 """
 
     def __init__(self):

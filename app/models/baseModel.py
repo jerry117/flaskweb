@@ -64,11 +64,11 @@ class BaseModel(db.Model, JsonUtil):
     '''基类模型'''
     __abstract__ = True
     # 考虑一下integer是否需要加括号。
-    id = db.Column(db.Integer, primary_key=True, comment='自增主键')
+    id = db.Column(db.Integer(), primary_key=True, comment='自增主键')
     created_time = db.Column(db.DateTime, default=datetime.now, comment='创建时间')
     updated_time = db.Column(db.DateTime, default=datetime.now, comment='修改时间', onupdate=datetime.now)
-    created_user = db.Column(db.Integer, nullable=True, default=1, comment='创建数据的用户ID')
-    updated_user = db.Column(db.Integer, nullable=True, default=1, comment='修改数据的用户ID')
+    created_user = db.Column(db.Integer(), nullable=True, default=1, comment='创建数据的用户ID')
+    updated_user = db.Column(db.Integer(), nullable=True, default=1, comment='修改数据的用户ID')
 
     @property
     def str_created_time(self):
@@ -102,6 +102,14 @@ class BaseModel(db.Model, JsonUtil):
             for key, value in attrs_dict.items():
                 if hasattr(self, key) and key not in ['id', 'num']:
                     setattr(self, key, self.dumps(value) if key in args else value)
+
+    def insert_or_update(self, attrs_dict: dict, *args, **kwargs):
+        '''创建或更新'''
+        old_data = self.get_first(**kwargs)
+        if old_data:
+            old_data.update(attrs_dict, *args)
+            return old_data
+        return self.create(attrs_dict, *args)
         
     def is_create_user(self, user_id):
         return self.created_user == user_id
@@ -130,7 +138,7 @@ class BaseModel(db.Model, JsonUtil):
                 case = cls.get_first(id=case_id)
                 case.num = (page_num - 1) * page_size + index
                
-    @classmethod
+               
     def to_dict(self, to_dict:list = [], pop_list:list = []):
         dict_data = {}
         pop_list.extend(['created_time', 'update_time'])

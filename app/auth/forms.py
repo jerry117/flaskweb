@@ -55,9 +55,8 @@ class LoginForm(BaseForm):
     def validate_account(self, field):
         '''校验账号'''
         user = User.get_first(account=field.data)
-        print(self.password.data)
-        if user is None :
-        # if user is None or not user.verify_password(self.password.data):
+        # if user is None :
+        if user is None or not user.verify_password(self.password.data):
             raise ValidationError(f'账号或密码错误')
         if user.status == 0:
             raise ValidationError(f'账号 {field.data} 为冻结状态，请联系管理员')
