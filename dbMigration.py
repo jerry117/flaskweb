@@ -1,5 +1,7 @@
+from cgi import print_environ_usage
 import json
 from collections import OrderedDict
+from unicodedata import name
 
 from flask_script import Manager
 from flask_migrate import Migrate, MigrateCommand
@@ -119,6 +121,105 @@ kym_keword = [
 ]
 
 @manager.command
-def init_role(self):
+def init_role():
     '''初始化权限、角色'''
-    print()
+    print(f'{"=" * 15} 开始创建角色 {"=" * 15}')
+    roles_permissions_map = OrderedDict()
+    roles_permissions_map[u'测试人员'] = ['COMMON']
+    roles_permissions_map[u'管理员'] = ['COMMON', 'ADMINISTER']
+    # 处理key然后处理value
+    for role_name in roles_permissions_map:
+        role = Role.get_first(name=role_name)
+        if role is None:
+            role = Role(name=role_name)
+            db.session.add(role)
+            role.permission = []
+        for permission_name in roles_permissions_map[role_name]:
+            permission = Permission.get_first(name=permission_name)
+            if permission is  None:
+                permission = Permission(name=permission_name)
+                db.session.add(permission)
+            role.permission.append(permission)
+            db.session.commit()
+    print(f'{"=" * 15} 角色创建成功 {"=" * 15}')
+
+
+
+@manager.command
+def init_user():
+    """ 初始化用户 """
+    print(f'{"=" * 15} 开始创建管理员用户 {"=" * 15}')
+    user_list = [
+        {'account': 'admin', 'password': '123456', 'name': '管理员', 'status': 1, 'role_id': 2},
+        {'account': 'common', 'password': 'common', 'name': '公用账号', 'status': 1, 'role_id': 1}
+    ]
+    for user_info in user_list:
+        if User.get_first(account=user_info['account']) is None:
+            User().create(user_info)
+            print(f'{"=" * 15} 用户 {user_info["name"]} 创建成功 {"=" * 15}')
+    print(f'{"=" * 15} 用户创建完成 {"=" * 15}')
+
+
+@manager.command
+def init_config_type():
+    """ 初始化配置类型 """
+    print(f'{"=" * 15} 开始创建配置类型 {"=" * 15}')
+    config_type_list = [
+        {'name': '系统配置', 'desc': '全局配置'},
+        {'name': '邮箱', 'desc': '邮箱服务器'}
+    ]
+    for data in config_type_list:
+        if ConfigType.get_first(name=data["name"]) is None:
+            ConfigType().create(data)
+            print(f'{"=" * 15} 配置类型 {data["name"]} 创建成功 {"=" * 15}')
+    print(f'{"=" * 15} 配置类型创建完成 {"=" * 15}')
+
+
+@manager.command
+def init_config():
+    """ 初始化配置 """
+    print(f'{"=" * 15} 开始创建配置 {"=" * 15}')
+    conf_list = [
+        {'name': 'QQ邮箱', 'value': 'smtp.qq.com', 'type': '邮箱', 'desc': 'QQ邮箱服务器'},
+        {'name': 'http_methods', 'value': 'GET,POST,PUT,DELETE', 'type': '系统配置', 'desc': 'http请求方式，以英文的 "," 隔开'},
+        {'name': 'make_user_info_mapping', 'value': json.dumps(make_user_info_mapping, ensure_ascii=False),
+         'type': '系统配置', 'desc': '生成用户信息的可选项，映射faker的模块（不了解faker模块勿改）'},
+        {'name': 'yapi_host', 'value': '', 'type': '系统配置', 'desc': 'yapi域名'},
+        {'name': 'yapi_account', 'value': '', 'type': '系统配置', 'desc': 'yapi账号'},
+        {'name': 'yapi_password', 'value': '', 'type': '系统配置', 'desc': 'yapi密码'},
+        {'name': 'ignore_keyword_for_group', 'value': '[]', 'type': '系统配置', 'desc': '不需要从yapi同步的分组关键字'},
+        {'name': 'ignore_keyword_for_project', 'value': '[]', 'type': '系统配置', 'desc': '不需要从yapi同步的服务关键字'},
+        {'name': 'kym', 'value': json.dumps(kym_keword, ensure_ascii=False, indent=4), 'type': '系统配置',
+         'desc': 'KYM分析项'},
+        {'name': 'default_diff_message_send_addr', 'value': '', 'type': '系统配置', 'desc': 'yapi接口监控报告默认发送钉钉机器人地址'},
+    ]
+    for data in conf_list:
+        if Config.get_first(name=data["name"]) is None:
+            Config().create(data)
+            print(f'{"=" * 15} 配置 {data["name"]} 创建成功 {"=" * 15}')
+    print(f'{"=" * 15} 配置创建完成 {"=" * 15}')
+
+
+@manager.command
+def init():
+    """ 初始化 权限、角色、管理员 """
+    print(f'{"=" * 15} 正在初始化数据 {"=" * 15}')
+    init_role()
+    init_user()
+    init_config_type()
+    init_config()
+    print(f'{"=" * 15} 数据初始化完毕 {"=" * 15}')
+
+
+"""
+初始化数据库
+python dbMigration.py db init
+python dbMigration.py db migrate
+python dbMigration.py db upgrade
+
+初始化数据
+python dbMigration.py init
+"""
+
+if __name__ == '__main__':
+    manager.run()

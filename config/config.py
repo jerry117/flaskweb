@@ -140,6 +140,6 @@ config = {
     'heroku': HerokuConfig,
     'docker': DockerConfig,
     'unix': UnixConfig,
-
     'default': DevelopmentConfig
+    
 }
