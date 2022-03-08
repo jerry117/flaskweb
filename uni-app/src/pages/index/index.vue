@@ -8,23 +8,32 @@
 			<button class="btn" @click="jumpPage">个人中心</button>
 			
 		</view>
-		<div id="app" >
-			{{greeting}}
-			<input v-model="greeting"/>
+		<div id="app"  v-cloak >
+			<!-- {{greeting}} -->
+			<view-form />
+			<input @keyup.enter="greet" v-model="greeting"/>
 			<hr />
+			<!-- <button v-on:click="isVisible=! isVisible">Toggle box</button> -->
+			<!-- 相同的写法 -->
+			<!-- <button @click="isVisible=! isVisible">Toggle box</button> -->
 			<div v-if="isVisible" class="box"></div>
+			<button @click="togglebox">Toggle box</button>
 		</div>
 	</view>
 </template>
 
 <script >
-
+	import {viewForm} from "./components/viewForm"
 	export default {
+		name: "index",
+		components:{
+			viewForm
+		},
 		data() {
 			return {
 				title: '首页',
 				greeting: 'jerry',
-				isVisible: true
+				isVisible: false
 			}
 		},
 		onLoad() {
@@ -35,10 +44,18 @@
 				uni.navigateTo({
 					url: '/pages/login/index'
 				})
+			},
+			togglebox(){
+				this.isVisible = ! this.isVisible
+			},
+			greet(){
+				console.log(this.greeting)
 			}
+
 
 		}
 	}
+	
 </script>
 
 <style>
@@ -74,5 +91,14 @@
 		color: black;
 		display: block;
 		margin: 200rpx
+	}
+	.box {
+		background-color:purple;
+		height: 200rpx;
+		width: 200rpx;
+	}
+	[v-cloak]{
+		display: none;
+
 	}
 </style>
