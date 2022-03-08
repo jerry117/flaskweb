@@ -8,14 +8,23 @@
 			<button class="btn" @click="jumpPage">个人中心</button>
 			
 		</view>
+		<div id="app" >
+			{{greeting}}
+			<input v-model="greeting"/>
+			<hr />
+			<div v-if="isVisible" class="box"></div>
+		</div>
 	</view>
 </template>
 
-<script>
+<script >
+
 	export default {
 		data() {
 			return {
-				title: '首页'
+				title: '首页',
+				greeting: 'jerry',
+				isVisible: true
 			}
 		},
 		onLoad() {
@@ -24,7 +33,7 @@
 		methods: {
 			jumpPage(){
 				uni.navigateTo({
-					url: '/pages/users/index'
+					url: '/pages/login/index'
 				})
 			}
 

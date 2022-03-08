@@ -8,7 +8,7 @@
 			
 		},
 		{
-			"path": "pages/users/index",
+			"path": "pages/login/index",
 			"style": {
 				"navigationBarTitleText": "登录"
 			}
