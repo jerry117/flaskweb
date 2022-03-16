@@ -2,9 +2,9 @@
 
 		<div >
 			
-		<input type="email" />
+		<Input v-model='email' type="email" />
 
-        <input type="password" />
+        <Input v-model='password' type="password" />
 			
 			
 		</div>
@@ -19,6 +19,8 @@
 	
 		data() {
 			return {
+				email:"",
+				password:"",
 				
 			}
 		},

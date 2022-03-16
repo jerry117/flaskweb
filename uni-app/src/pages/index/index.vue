@@ -9,9 +9,10 @@
 			
 		</view>
 		<div id="app"  v-cloak >
-			<!-- {{greeting}} -->
-			<view-form />
-			<input @keyup.enter="greet" v-model="greeting"/>
+			{{greeting}}
+			<viewForm />
+			
+			<Input @keyup.enter="greet" v-model="greeting"/>
 			<hr />
 			<!-- <button v-on:click="isVisible=! isVisible">Toggle box</button> -->
 			<!-- 相同的写法 -->
@@ -19,6 +20,9 @@
 			<div v-if="isVisible" class="box"></div>
 			<button @click="togglebox">Toggle box</button>
 		</div>
+			
+		<div v-for="str in inputs">{{str}}</div>
+			
 	</view>
 </template>
 
@@ -33,7 +37,13 @@
 			return {
 				title: '首页',
 				greeting: 'jerry',
-				isVisible: false
+				isVisible: false,
+				inputs:[
+					'email',
+					'password',
+					'name'
+				]
+				
 			}
 		},
 		onLoad() {
@@ -49,9 +59,10 @@
 				this.isVisible = ! this.isVisible
 			},
 			greet(){
-				console.log(this.greeting)
+				console.log(this.greeting);
+				// this.$emit();
 			}
-
+			
 
 		}
 	}
