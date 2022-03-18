@@ -8,10 +8,11 @@
 			<button class="btn" @click="jumpPage">个人中心</button>
 			
 		</view>
-		<div id="app"  v-cloak >
+		<div id="index"  v-cloak >
 			{{greeting}}
-			<viewForm />
-			
+			<div>
+			<viewForm name='viewForm'></viewForm>
+			</div>
 			<Input @keyup.enter="greet" v-model="greeting"/>
 			<hr />
 			<!-- <button v-on:click="isVisible=! isVisible">Toggle box</button> -->
@@ -21,15 +22,15 @@
 			<button @click="togglebox">Toggle box</button>
 		</div>
 			
-		<div v-for="str in inputs">{{str}}</div>
+		<!-- <div v-for="str in inputs">{{str}}</div> -->
 			
 	</view>
 </template>
 
 <script >
-	import {viewForm} from "./components/viewForm"
+	import viewForm from "@/pages/index/components/viewForm.vue"
 	export default {
-		name: "index",
+		name:'index',
 		components:{
 			viewForm
 		},
@@ -42,6 +43,7 @@
 					'email',
 					'password',
 					'name'
+					
 				]
 				
 			}

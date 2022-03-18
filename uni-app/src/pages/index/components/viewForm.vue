@@ -1,6 +1,6 @@
 <template>
 
-		<div >
+		<div class="viewForm" >
 			
 		<Input v-model='email' type="email" />
 
@@ -12,11 +12,9 @@
 </template>
 
 
-
 <script >	
 	export default {
 		name: "viewForm",
-	
 		data() {
 			return {
 				email:"",

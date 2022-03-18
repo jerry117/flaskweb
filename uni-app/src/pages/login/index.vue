@@ -46,6 +46,7 @@
 <script>
     import {login} from '@/apis/user'
 	export default {
+        name:'login',
 		data() {
 			return {
 				title: '登录',
