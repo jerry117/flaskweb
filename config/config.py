@@ -11,6 +11,7 @@ conf = load(os.path.abspath('.')+'/config/config.yaml')
 
 class Config:
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'hard to guess string'
+    # SECRET_KEY = os.urandom(24)  随机字符串
     SQLALCHEMY_COMMIT_ON_TEARDOWN = True
     FLASKY_MAIL_SUBJECT_PREFIX = '[Flasky]'
     MAIL_SERVER = os.environ.get('MAIL_SERVER', 'smtp.googlemail.com')
@@ -34,7 +35,7 @@ class Config:
         pass
 
 
-
+# 开发环境
 class DevelopmentConfig(Config):
     DEBUG = True
     # SQLALCHEMY_DATABASE_URI = os.environ.get('DEV_DATABASE_URL') or \
@@ -47,16 +48,21 @@ class DevelopmentConfig(Config):
     DB_URI = 'mysql+pymysql://{}:{}@{}/{}'.format(USERNAME, PASSWORD, HOSTNAME, DATABASE)
     SQLALCHEMY_DATABASE_URI = DB_URI
     UPLOAD_FOLDER = '/tmp/permdir'
+    # 是否追踪数据库修改， 一般不开启，会影响性能
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
+    # 是否显示底层执行的SQL语句
+    SQLALCHEMY_ECHO = True
+
     
 
-
+# 测试环境
 class TestingConfig(Config):
     TESTING = True
     SQLALCHEMY_DATABASE_URI = os.environ.get('TEST_DATABASE_URL') or \
         'sqlite://'
     WTF_CSRF_ENABLED = False
 
-
+# 生产环境
 class ProductionConfig(Config):
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or \
         'sqlite:///' + os.path.join(basedir, 'data.sqlite')
@@ -132,7 +138,7 @@ class UnixConfig(ProductionConfig):
         syslog_handler.setLevel(logging.INFO)
         app.logger.addHandler(syslog_handler)
 
-
+# 映射环境对象
 config = {
     'development': DevelopmentConfig,
     'testing': TestingConfig,
