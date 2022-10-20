@@ -3,7 +3,7 @@ import json
 class JsonUtil:
     @classmethod
     def dump(cls, obj, fp, *args, **kwargs):
-        kwargs.setdefault('ensure_ascii', False)
+        kwargs.setdefault('ensure_ascii', False) #解决中文显示问题
         kwargs.setdefault('indent', 4)
         return json.dump(obj, fp, *args, **kwargs)
         
